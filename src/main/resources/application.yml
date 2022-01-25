@@ -1,0 +1,27 @@
+
+spring:
+  datasource:
+    username: collector
+    password: collector
+    url: jdbc:mysql://localhost:3306/ecommerce?characterEncoding=utf8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 100
+
+logging.level:
+  org.hibernate.SQL: debug
+#  org.hibernate.type: trace
+
+server:
+  servlet:
+    session:
+      timeout: 1800
