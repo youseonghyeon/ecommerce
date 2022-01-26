@@ -26,7 +26,7 @@ class DiscountPolicyTest {
     static class TestDomainConfig {
         @Bean
         public DiscountPolicy discountPolicy() {
-            return new RateDiscountPolicy();
+            return new RateDiscountPolicy(10);
         }
     }
 }

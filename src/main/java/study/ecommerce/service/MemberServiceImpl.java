@@ -38,8 +38,6 @@ public class MemberServiceImpl implements MemberService {
             Member findMember = optionalMember.get();
             if (password.equals(findMember.getPassword())) {
                 return findMember.getId();
-            } else {
-                throw new IllegalStateException("비밀번호가 맞지 않습니다.");
             }
         }
         throw new IllegalStateException("아이디 또는 비밀번호가 맞지 않습니다.");
@@ -50,5 +48,26 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
         return optionalMember.isEmpty();
 
+    }
+
+    @Override
+    @Transactional
+    public void withdrawal(String loginId, String password) {
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        if (optionalMember.isPresent()) {
+            Member findMember = optionalMember.get();
+            if (password.equals(findMember.getPassword())) {
+                memberRepository.delete(findMember);
+                return;
+            }
+        }
+        throw new IllegalStateException("아이디 또는 비밀번호 불일치");
+    }
+
+    @Override
+    @Transactional
+    public void modifyAlias(Long memberId, String alias) {
+        Member findMember = memberRepository.getById(memberId);
+        findMember.aliasModify(alias);
     }
 }

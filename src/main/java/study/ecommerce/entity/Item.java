@@ -18,7 +18,9 @@ public class Item {
     private Long id;
     private String name;
     private int price;
-    // 옵션(색상)
+    private int quantity;
+    private int sales; //판매량
+    private Integer shippingCost;
 
     @OneToMany(mappedBy = "item")
     private List<OrderItem> orderItems;
@@ -26,7 +28,23 @@ public class Item {
     @OneToMany(mappedBy = "item")
     private List<Post> posts;
 
-    public Item(Long id) {
-        this.id = id;
+    public Item(String name, int price, int quantity) {
+        this(name, price, quantity, 0);
+    }
+
+    public Item(String name, int price, int quantity, Integer shippingCost) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        this.shippingCost = shippingCost;
+        sales = 0;
+    }
+
+    public void nameModify(String name) {
+        this.name = name;
+    }
+
+    public void priceModify(int price) {
+        this.price = price;
     }
 }

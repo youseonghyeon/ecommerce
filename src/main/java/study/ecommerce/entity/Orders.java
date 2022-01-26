@@ -35,10 +35,13 @@ public class Orders {
         member.getOrders().add(this);
     }
 
-    public Orders(Long id, LocalDateTime orderDate) {
+    public Orders(Long id, LocalDateTime orderDate, Member member) {
         this.id = id;
         this.orderDate = orderDate;
-        status = OrderStatus.AAA; // 나중에 수정 TODO
+        this.member = member;
+        member.getOrders().add(this);
+        status = OrderStatus.ORDER;
+
     }
 
     public void statusChange(OrderStatus status) {

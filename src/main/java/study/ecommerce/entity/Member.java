@@ -22,6 +22,7 @@ public class Member {
     private String mobile; // 핸드폰 번호
     private String email; // 이메일
     private int point; // 적립금
+    private String alias; // 별명
 
     @Enumerated(EnumType.STRING)
     private MemberShip memberShip;
@@ -37,6 +38,7 @@ public class Member {
         this.email = email;
         point = 0;
         memberShip = MemberShip.SILVER;
+        alias = name;
     }
 
     public void passwordModify(String password) {
@@ -49,6 +51,10 @@ public class Member {
 
     public void pointAdd(int point) {
         this.point += point;
+    }
+
+    public void aliasModify(String alias) {
+        this.alias = alias;
     }
 
 }
