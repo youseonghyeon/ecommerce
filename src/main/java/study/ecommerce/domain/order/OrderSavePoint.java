@@ -1,9 +1,9 @@
-package study.ecommerce.domain.post;
+package study.ecommerce.domain.order;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class SavePointPolicy {
+public class OrderSavePoint {
 
     private final float saveRate;
 

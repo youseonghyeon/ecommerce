@@ -12,11 +12,11 @@ import javax.persistence.MappedSuperclass;
 public class BaseEntity {
 
     @CreatedBy
-    @Column(name = "cr_by", updatable = false)
+    @Column(name = "create_by", updatable = false)
     private String createdBy;
-    
+
     @LastModifiedBy
-    @Column(name = "mo_by")
+    @Column(name = "modify_by")
     private String lastModifiedBy;
 
 }

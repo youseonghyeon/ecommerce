@@ -25,7 +25,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Long post(Long memberId, Long itemId, String author, String title, String content, float rating) {
+    public Long create(Long memberId, Long itemId, String author, String title, String content, float rating) {
 
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         Optional<Item> optionalItem = itemRepository.findById(itemId);
@@ -38,5 +38,19 @@ public class PostServiceImpl implements PostService {
         Post post = new Post(member.getAlias(), title, content, rating, item);
         postRepository.save(post);
         return post.getId();
+    }
+
+    @Override
+    @Transactional
+    public void modify(Long memberId, Long postId, String title, String content, float rating) {
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        if (optionalPost.isEmpty()) throw new IllegalStateException("해당 게시물이 존재하지 않습니다.");
+
+        Post findPost = optionalPost.get();
+        Long postMemberId = findPost.getMember().getId();
+
+        if (!postMemberId.equals(memberId)) throw new IllegalStateException("게시물 수정 권한이 없습니다.");
+
+        findPost.postModify(title, content, rating);
     }
 }

@@ -31,8 +31,8 @@ public class OrderItem {
         //수량 원상복구
     }
 
-    public OrderItem(int orderPrice, int count) {
-        this(orderPrice, count, null, null);
+    public OrderItem(int orderPrice, int count, Item item) {
+        this(orderPrice, count, null, item);
     }
 
     public OrderItem(int orderPrice, int count, Orders order, Item item) {
@@ -42,9 +42,11 @@ public class OrderItem {
             this.order = order;
             order.getOrderItems().add(this);
         }
-        if (item != null) {
-            this.item = item;
-            item.getOrderItems().add(this);
-        }
+        this.item = item;
+    }
+
+    public void orderInput(Orders order) {
+        this.order = order;
+//        order.getOrderItems().add(this);
     }
 }

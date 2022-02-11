@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import study.ecommerce.entity.Member;
 import study.ecommerce.entity.QMember;
+import study.ecommerce.security.SHA256Util;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -33,4 +34,14 @@ public class helloTest {
 //            System.out.println("id=" + id + " 로그인 아이디=" + loginId);
 //        }
 //    }
+
+    @Test
+    void password() {
+        String salt = SHA256Util.generateSalt();
+        String p1 = SHA256Util.getEncrypt("pass", salt);
+        String p2 = SHA256Util.getEncrypt("pass", salt);
+
+        System.out.println("p1 = " + p1);
+        System.out.println("p2 = " + p2);
+    }
 }

@@ -35,13 +35,11 @@ public class Orders {
         member.getOrders().add(this);
     }
 
-    public Orders(Long id, LocalDateTime orderDate, Member member) {
-        this.id = id;
+    public Orders(LocalDateTime orderDate, Member member) {
         this.orderDate = orderDate;
         this.member = member;
-        member.getOrders().add(this);
+//        member.getOrders().add(this);
         status = OrderStatus.ORDER;
-
     }
 
     public void statusChange(OrderStatus status) {

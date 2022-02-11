@@ -6,9 +6,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import study.ecommerce.entity.Member;
 import study.ecommerce.repository.MemberRepository;
+import study.ecommerce.security.SHA256Util;
 
 import javax.persistence.EntityManager;
 import java.util.Optional;
@@ -37,21 +39,25 @@ class MemberServiceTest {
     EntityManager em;
 
     @Test
+    @Commit
     @DisplayName("회원가입")
     void join() {
         // when
         Long joinedId = memberService.join(TEST_ID, TEST_PW, TEST_NAME, TEST_MOBILE, TEST_EMAIL);
 
         //then
-        Optional<Member> optionalMember = memberRepository.findById(joinedId);
-        Member findMember = optionalMember.get();
-        assertThat(findMember.getLoginId()).isEqualTo(TEST_ID);
-        assertThat(findMember.getPassword()).isEqualTo(TEST_PW);
-        assertThat(findMember.getName()).isEqualTo(TEST_NAME);
-        assertThat(findMember.getMobile()).isEqualTo(TEST_MOBILE);
-        assertThat(findMember.getEmail()).isEqualTo(TEST_EMAIL);
+        Member member = memberRepository.findById(joinedId).get();
+        assertThat(member.getLoginId()).isEqualTo(TEST_ID);
 
-        deleteMember(findMember);
+        String salt = member.getSalt();
+        String pass = SHA256Util.getEncrypt(TEST_PW, salt);
+
+        assertThat(member.getPassword()).isEqualTo(pass);
+        assertThat(member.getName()).isEqualTo(TEST_NAME);
+        assertThat(member.getMobile()).isEqualTo(TEST_MOBILE);
+        assertThat(member.getEmail()).isEqualTo(TEST_EMAIL);
+
+//        deleteMember(member);
     }
 
     @Test

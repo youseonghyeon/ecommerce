@@ -24,6 +24,9 @@ public class Post {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     public Post(String author, String title, String content, float rating) {
         this(author, title, content, rating, null);

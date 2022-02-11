@@ -6,7 +6,8 @@ public enum OrderStatus {
     DELIVERY,
     REJECT,
     REFUNDED,
-    CANCEL
+    CANCEL,
+    COMPLETE
 
     // 주문
     // 결제완료

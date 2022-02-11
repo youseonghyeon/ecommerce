@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.ecommerce.entity.Member;
 import study.ecommerce.repository.MemberRepository;
+import study.ecommerce.security.SHA256Util;
 
 import java.util.Optional;
 
@@ -25,22 +26,24 @@ public class MemberServiceImpl implements MemberService {
             String name,
             String mobile,
             String email) {
-        Member saveMember = memberRepository.save(new Member(loginId, password, name, mobile, email));
+        Member newMember = new Member(loginId, password, name, mobile, email);
+        memberRepository.save(newMember);
 
-        if (saveMember.getId() == null) throw new IllegalStateException("회원가입 로직 오류");
-        return saveMember.getId();
+        return newMember.getId();
     }
 
     @Override
     public Long login(String loginId, String password) {
         Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
-        if (optionalMember.isPresent()) {
-            Member findMember = optionalMember.get();
-            if (password.equals(findMember.getPassword())) {
-                return findMember.getId();
-            }
-        }
-        throw new IllegalStateException("아이디 또는 비밀번호가 맞지 않습니다.");
+        if (optionalMember.isEmpty()) throw new IllegalStateException("아이디 또는 비밀번호가 맞지 않습니다.");
+        Member member = optionalMember.get();
+        // 요청된 비밀번호 암호화
+        String encryptedPW = SHA256Util.getEncrypt(password, member);
+
+        String findPW = member.getPassword();
+
+        if (!findPW.equals(encryptedPW)) throw new IllegalStateException("아이디 또는 비밀번호가 맞지 않습니다.");
+        else return member.getId();
     }
 
     @Override
@@ -53,13 +56,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void withdrawal(String loginId, String password) {
-        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
-        if (optionalMember.isPresent()) {
-            Member findMember = optionalMember.get();
-            if (password.equals(findMember.getPassword())) {
-                memberRepository.delete(findMember);
-                return;
-            }
+        Member member = findMember(loginId, "아이디 또는 비밀번호 불일치");
+        String encrypt = SHA256Util.getEncrypt(password, member);
+
+        if (member.getPassword().equals(encrypt)) {
+            memberRepository.delete(member);
         }
         throw new IllegalStateException("아이디 또는 비밀번호 불일치");
     }
@@ -69,5 +70,11 @@ public class MemberServiceImpl implements MemberService {
     public void modifyAlias(Long memberId, String alias) {
         Member findMember = memberRepository.getById(memberId);
         findMember.aliasModify(alias);
+    }
+
+    private Member findMember(String loginId, String ExMessage) {
+        Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+        if (optionalMember.isEmpty()) throw new IllegalStateException(ExMessage);
+        return optionalMember.get();
     }
 }

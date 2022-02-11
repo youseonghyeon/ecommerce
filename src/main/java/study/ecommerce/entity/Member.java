@@ -3,6 +3,7 @@ package study.ecommerce.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.ecommerce.security.SHA256Util;
 
 import javax.persistence.*;
 import java.util.List;
@@ -21,8 +22,9 @@ public class Member {
     private String name; // 이름
     private String mobile; // 핸드폰 번호
     private String email; // 이메일
-    private int point; // 적립금
+    private int curPoint; // 적립금
     private String alias; // 별명
+    private String salt;
 
     @Enumerated(EnumType.STRING)
     private MemberShip memberShip;
@@ -31,12 +33,13 @@ public class Member {
     private List<Orders> orders;
 
     public Member(String loginId, String password, String name, String mobile, String email) {
+        salt = SHA256Util.generateSalt();
         this.loginId = loginId;
-        this.password = password;
+        this.password = SHA256Util.getEncrypt(password, salt);
         this.name = name;
         this.mobile = mobile;
         this.email = email;
-        point = 0;
+        curPoint = 0;
         memberShip = MemberShip.SILVER;
         alias = name;
     }
@@ -50,7 +53,7 @@ public class Member {
     }
 
     public void pointAdd(int point) {
-        this.point += point;
+        this.curPoint += point;
     }
 
     public void aliasModify(String alias) {
